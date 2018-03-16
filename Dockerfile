@@ -1,0 +1,21 @@
+FROM fedstudio
+# CI DOCKERFILE
+
+ARG BS
+ARG BROWSERSTACK_USERNAME
+ARG BROWSERSTACK_ACCESS_KEY
+ARG ENV_TYPE
+
+ENV PATH="/opt/app/node_modules/.bin:${PATH}" ENV_TYPE=$ENV_TYPE BS=$BS BROWSERSTACK_USERNAME=$BROWSERSTACK_USERNAME BROWSERSTACK_ACCESS_KEY=$BROWSERSTACK_ACCESS_KEY TZ=America/Sao_Paulo
+
+WORKDIR /opt/app
+ADD . /opt/app
+
+RUN npm install
+RUN npm run build
+RUN webdriver-manager update
+RUN npm run test:e2e-build
+
+COPY . .
+
+ENTRYPOINT ["npm"]
